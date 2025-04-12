@@ -241,9 +241,10 @@
                 card.dataset.index = index;
 
                 // Creamos la cara frontal (el signo de interrogación)
-                const cardFront = document.createElement('div');
+                const cardFront = document.createElement('img');
                 cardFront.classList.add('card-face', 'card-front');
-                cardFront.textContent = '?';
+                cardFront.src = './volteo.jpeg'; // Imagen del signo de interrogación
+                cardFront.alt = 'Imagen trasera :3';
 
                 // Creamos la cara trasera (la imagen del personaje)
                 const cardBack = document.createElement('div');
