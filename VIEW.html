@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./volteo.jpeg">
-    <title>Juego de Memoria Rick and Morty</title>
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="./volteo.jpeg">
+        <title>Juego de Memoria Rick and Morty</title>
+        <style>
         /* Reseteo básico de CSS */
         * {
             box-sizing: border-box;
@@ -135,28 +135,39 @@
             text-shadow: 3px 3px 0 #fff12d;
         }
     </style>
-</head>
+    </head>
 
-<body>
-    <!-- Título del juego -->
-    <h1 class="title">Juego de Memoria Rick and Morty</h1>
+    <body>
+        <!-- Título del juego -->
+        <h1 class="title">Juego de Memoria Rick and Morty</h1>
 
-    <!-- Contenedor para mostrar estadísticas del juego -->
-    <div class="game-info">
-        <div>Intentos: <span id="attempts">0</span></div>
-        <div>Pares encontrados: <span id="matches">0</span></div>
-    </div>
+        <!--Servicio de niveles manera gráfica-->
+        <div class="niveles">
+            <h2 class="title">Niveles de dificultad</h2>
+            <div class="niveles-container">
+                <button class="btn-restart" id="easy">Fácil</button>
+                <button class="btn-restart" id="medium">Medio</button>
+                <button class="btn-restart" id="hard">Difícil</button>
+            </div>
+        </div>
 
-    <!-- Indicador de carga -->
-    <div id="loading" class="loading">Cargando personajes de Rick and Morty...</div>
+        <!-- Contenedor para mostrar estadísticas del juego -->
+            <div>Time <span id="time">0:00</span></div>>
+            <div>Intentos: <span id="attempts">0</span></div>
+            <div>Pares encontrados: <span id="matches">0</span></div>
+        </div>
 
-    <!-- Contenedor donde se generarán las cartas -->
-    <div class="game-container" id="game-container"></div>
+        <!-- Indicador de carga -->
+        <div id="loading" class="loading">Cargando personajes de Rick and
+            Morty...</div>
 
-    <!-- Botón para reiniciar el juego -->
-    <button class="btn-restart" id="restart">Reiniciar Juego</button>
+        <!-- Contenedor donde se generarán las cartas -->
+        <div class="game-container" id="game-container"></div>
 
-    <script>
+        <!-- Botón para reiniciar el juego -->
+        <button class="btn-restart" id="restart">Reiniciar Juego</button>
+
+        <script>
         // =================== SELECCIÓN DE ELEMENTOS DEL DOM ===================
         const gameContainer = document.getElementById('game-container'); // Contenedor de las cartas
         const attemptsElement = document.getElementById('attempts');    // Elemento para mostrar intentos
@@ -171,7 +182,8 @@
         let firstCard, secondCard; // Referencias a las dos cartas seleccionadas
         let attempts = 0;         // Contador de intentos
         let matches = 0;          // Contador de pares encontrados
-        let characters = [];      // Array para almacenar datos de personajes de la API
+        let characters = [];      // Array para almacenar los personajes obtenidos de la API
+        let TimeRanges =[];      // Timer para el juego
 
         // =================== OBTENER DATOS DE LA API ===================
         // Función para obtener personajes de la API de Rick and Morty
@@ -185,8 +197,43 @@
                 const response = await fetch('https://rickandmortyapi.com/api/character?page=1');
                 const data = await response.json();
 
-                // Tomamos solo los primeros 8 personajes (para tener 8 pares = 16 cartas)
-                const charactersData = data.results.slice(0, 8);
+
+                //servicio de niveles.
+                const easyButton = document.getElementById('easy');
+                const mediumButton = document.getElementById('medium');
+                const hardButton = document.getElementById('hard');
+
+                // Añadimos eventos a los botones de dificultad
+                // Al hacer clic en un botón, se cargan los personajes según la dificultad seleccionada
+                // Usamos el método slice para obtener un número diferente de personajes según la dificultad
+                // 8 personajes para fácil, 12 para medio y 16 para difícil
+                // Almacenamos los personajes en la variable charactersData
+                // y luego los duplicamos para el juego
+
+
+                if (easyButton) {
+                    easy.addEventListener('click', () => {
+                       charactersData = data.results.slice(0, 8); // 8 personajes para fácil
+                    });
+                }
+
+                if (mediumButton) {
+                    medium.addEventListener('click', () => {
+                       charactersData = data.results.slice(0, 12); // 12 personajes para medio
+                    });
+                }  
+
+                if (hardButton) {
+                    hard.addEventListener('click', () => {
+                       charactersData = data.results.slice(0, 16); // 16 personajes para difícil
+                    }); 
+                } 
+
+                const charactersData = data.results.slice(easyButton, mediumButton, hardButton); 
+                if (charactersData.length === 0) {
+                    throw new Error('No se encontraron personajes en la API.');
+                }
+                // Si no hay personajes, mostramos un mensaje de error
 
                 // Preparamos el array para el juego (duplicamos cada personaje)
                 characters = [];
@@ -197,6 +244,7 @@
                         name: character.name,
                         image: character.image
                     });
+
                     characters.push({
                         id: character.id,
                         name: character.name,
@@ -379,6 +427,6 @@
             }
         });
     </script>
-</body>
+    </body>
 
 </html>
